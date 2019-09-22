@@ -5,7 +5,8 @@
         "guzzlehttp/psr7": "^1.6",
         "voryx/thruway": "^0.5.3",
         "thruway/pawl-transport": "^0.5.1",
-        "vlucas/phpdotenv": "^3.4"
+        "vlucas/phpdotenv": "^3.4",
+        "doctrine/orm": "^2.6"
     },
     "autoload": {
         "psr-4": {

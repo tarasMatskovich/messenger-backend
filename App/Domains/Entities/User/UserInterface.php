@@ -3,13 +3,11 @@
 
 namespace App\Domains\Entities\User;
 
-use App\Domains\Entities\DomainEntityInterface;
-
 /**
  * Interface UserInterface
  * @package App\Domains\Entities\User
  */
-interface UserInterface extends DomainEntityInterface
+interface UserInterface
 {
 
     /**

@@ -29,7 +29,7 @@ class RequestBuilder implements RequestBuilderInterface
     public function attachAttributesToRequest(ServerRequestInterface $request, array $attributes): ServerRequestInterface
     {
         foreach ($attributes as $name => $value) {
-            $request->withAttribute($name, $value);
+            $request = $request->withAttribute($name, $value);
         }
         return $request;
     }

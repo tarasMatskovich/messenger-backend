@@ -3,38 +3,27 @@
 
 namespace App\Domains\Entities\User;
 
-use App\Domains\Entities\DomainEntity;
-use orm\annotations\map;
-use orm\annotations\MyAnnotation;
 
 /**
- * Class User
- * @package App\Domains\Entities\User
- * @MyAnnotation(gateway="table.users")
+ * App\Domains\ORM\Mapping
+ *
+ * @\Doctrine\ORM\Mapping\Entity(repositoryClass="App\Domains\Repository\User\UserRepository")
+ * @\Doctrine\ORM\Mapping\Table(name="users")
  */
-class User extends DomainEntity implements UserInterface
+class User implements UserInterface
 {
 
     /**
-     * @var int
-     * @MyAnnotation(field="id")
+     * @\Doctrine\ORM\Mapping\Id()
+     * @\Doctrine\ORM\Mapping\GeneratedValue()
+     * @\Doctrine\ORM\Mapping\Column(name="id", type="integer")
      */
-    protected $id;
+    private $id;
 
     /**
-     * @var string
-     * @MyAnnotation(field="name")
+     * @\Doctrine\ORM\Mapping\Column(name="name")
      */
-    protected $name;
-
-    /**
-     * User constructor.
-     * @param string $name
-     */
-    public function __construct($name = null)
-    {
-        $this->name = $name;
-    }
+    private $name;
 
     /**
      * @return int
@@ -51,5 +40,4 @@ class User extends DomainEntity implements UserInterface
     {
         return $this->name;
     }
-
 }
