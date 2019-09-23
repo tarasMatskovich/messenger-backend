@@ -20,4 +20,15 @@ interface UserInterface
      */
     public function getName();
 
+    /**
+     * @param $name
+     * @return void
+     */
+    public function setName($name);
+
+    /**
+     * @return array
+     */
+    public function toArray();
+
 }

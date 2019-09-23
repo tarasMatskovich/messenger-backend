@@ -4,8 +4,11 @@ namespace bootstrap;
 
 use actions\test\NotTest;
 use actions\test\Test;
+use actions\user\signup\SignUp;
 use App\container\ContainerInterface;
 use App\Domains\Entities\User\User;
+use App\Factory\User\UserFactoryInterface;
+use App\Request\Validator\ValidatorInterface;
 
 return function (ContainerInterface $container) {
     $container->set('action.test', function (ContainerInterface $container) {
@@ -15,4 +18,11 @@ return function (ContainerInterface $container) {
         );
     });
     $container->set('action.test2', NotTest::class);
+    $container->set('action.user.signup', function (ContainerInterface $container) {
+        return new SignUp(
+            $container->get('application.entityManager')->getRepository(User::class),
+            $container->get(UserFactoryInterface::class),
+            $container->get(ValidatorInterface::class)
+        );
+    });
 };

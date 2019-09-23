@@ -4,12 +4,13 @@
 namespace App\Domains\Repository\User;
 
 use App\Domains\Entities\User\UserInterface;
+use Doctrine\Common\Persistence\ObjectRepository;
 
 /**
  * Interface UserRepositoryInterface
  * @package App\Domains\Repository\User
  */
-interface UserRepositoryInterface
+interface UserRepositoryInterface extends ObjectRepository
 {
 
     /**
@@ -17,5 +18,11 @@ interface UserRepositoryInterface
      * @return UserInterface|null
      */
     public function find($id);
+
+    /**
+     * @param UserInterface $user
+     * @return void
+     */
+    public function save(UserInterface $user);
 
 }
