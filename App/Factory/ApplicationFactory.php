@@ -6,6 +6,7 @@ use App\ApplicationInterface;
 use App\Factory\Enum\ApplicationTypesEnum;
 use App\HttpApplication;
 use App\Container\ContainerInterface;
+use App\Request\Builder\PipelineBuilder\PipelineBuilderInterface;
 use App\Request\Builder\RequestBuilderInterface;
 use App\Router\RouterInterface;
 use App\WampApplication;
@@ -44,11 +45,9 @@ class ApplicationFactory implements ApplicationFactoryInterface
     public function make(string $applicationType, ContainerInterface $container, RouterInterface $router)
     {
         switch ($applicationType) {
-            case ApplicationTypesEnum::APP_HTTP:
-                return new HttpApplication($container, $router, $this->requestBuilder);
-                break;
             case ApplicationTypesEnum::APP_WAMP:
-                return new WampApplication($container, $router, $this->requestBuilder);
+                $pipelineBuilder = $container->get(PipelineBuilderInterface::class);
+                return new WampApplication($container, $router, $this->requestBuilder, $pipelineBuilder);
                 break;
             default:
                 throw new ApplicationFactoryException("Undefined application type!");
