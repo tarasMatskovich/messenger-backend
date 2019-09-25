@@ -3,8 +3,12 @@
 namespace Config\container;
 
 use App\Container\ContainerInterface;
+use App\Domains\Service\AuthenticationService\AuthenticationService;
+use App\Domains\Service\AuthenticationService\AuthenticationServiceInterface;
 use App\Domains\Service\Config\Config;
 use App\Domains\Service\Config\ConfigInterface;
+use App\Domains\Service\JWTService\JWTService;
+use App\Domains\Service\JWTService\JWTServiceInterface;
 use App\Domains\Service\UserPassword\UserPasswordService;
 use App\Domains\Service\UserPassword\UserPasswordServiceInterface;
 use App\Factory\ApplicationFactory;
@@ -35,7 +39,11 @@ return [
         },
         ValidatorInterface::class => Validator::class,
         UserFactoryInterface::class => UserFactory::class,
-        UserPasswordServiceInterface::class => UserPasswordService::class
+        UserPasswordServiceInterface::class => UserPasswordService::class,
+        JWTServiceInterface::class => function (ContainerInterface $container) {
+            return new JWTService($container->get('application.config')->get('security:jwt:secret'));
+        },
+        AuthenticationServiceInterface::class => AuthenticationService::class
     ],
     'singletons' => [
 

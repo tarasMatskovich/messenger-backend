@@ -20,6 +20,12 @@ interface UserRepositoryInterface extends ObjectRepository
     public function find($id);
 
     /**
+     * @param array $criteria
+     * @return UserInterface|null
+     */
+    public function findOneBy(array $criteria);
+
+    /**
      * @param UserInterface $user
      * @return void
      */

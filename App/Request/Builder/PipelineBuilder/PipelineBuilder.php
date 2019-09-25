@@ -25,23 +25,34 @@ class PipelineBuilder implements PipelineBuilderInterface
     private $middlewares;
 
     /**
+     * @var array
+     */
+    private $skippedActions = [];
+
+    /**
      * PipelineBuilder constructor.
      * @param MiddlewareInterface[] $middlewares
+     * @param array $skippedActions
      */
-    public function __construct(array $middlewares)
+    public function __construct(array $middlewares, array $skippedActions)
     {
         $this->middlewares = $middlewares;
+        $this->skippedActions = $skippedActions;
     }
 
 
     /**
+     * @param string $action
      * @return PipelineInterface
      */
-    public function build(): PipelineInterface
+    public function build(string $action): PipelineInterface
     {
         $pipeline = new Pipeline();
         foreach ($this->middlewares as $middleware) {
-            $pipeline = $pipeline->pipe($middleware);
+            $skippedMiddlewaresForAction = $this->skippedActions[$action] ?? [];
+            if (!\in_array(get_class($middleware), $skippedMiddlewaresForAction)) {
+                $pipeline = $pipeline->pipe($middleware);
+            }
         }
         return $pipeline;
     }

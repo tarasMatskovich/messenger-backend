@@ -4,6 +4,11 @@ return [
     'doctrine' => [
 
     ],
+    'security' => [
+        'jwt' => [
+            'secret' => 'gd6cc27xv2GSc278xc'
+        ]
+    ],
     'database' => [
         'db_name' => getenv('DB_NAME'),
         'login' => getenv('DB_LOGIN'),

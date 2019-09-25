@@ -2,22 +2,20 @@
 /**
  * Created by PhpStorm.
  * User: t.matskovich
- * Date: 24.09.2019
- * Time: 16:35
+ * Date: 25.09.2019
+ * Time: 16:17
  */
 
-namespace App\Request\Middleware;
+namespace actions\user\signin;
 
+
+use actions\ActionInterface;
 use App\Domains\Repository\User\UserRepositoryInterface;
 use App\Domains\Service\AuthenticationService\AuthenticationServiceInterface;
 use App\Request\Exception\NotAuthenticatedException;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * Class AuthenticationMiddleware
- * @package App\Request\Middleware
- */
-class AuthenticationMiddleware implements MiddlewareInterface
+class SignIn implements ActionInterface
 {
 
     /**
@@ -31,7 +29,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
     private $authenticationService;
 
     /**
-     * AuthenticationMiddleware constructor.
+     * SignIn constructor.
      * @param UserRepositoryInterface $userRepository
      * @param AuthenticationServiceInterface $authenticationService
      */
@@ -46,18 +44,18 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
     /**
      * @param ServerRequestInterface $request
-     * @return ServerRequestInterface
+     * @return array
      * @throws NotAuthenticatedException
      */
     public function __invoke(ServerRequestInterface $request)
     {
-        $token = $request->getAttribute('token');
-        if (null === $token) {
-            throw new NotAuthenticatedException('У вас немає прав на даний ресурс');
+        $email = $request->getAttribute('email');
+        $password = $request->getAttribute('password');
+        $user = $this->userRepository->findOneBy(['email' => $email]);
+        if (null === $user) {
+            throw new NotAuthenticatedException('Не вірний email або пароль', 403);
         }
-        if (false === $this->authenticationService->checkToken($token)) {
-            throw new NotAuthenticatedException('Ваш токен аутентифікації є не дійсним. Будь ласка спробуйте ввійти в систему ще раз');
-        }
-        return $request;
+        return [];
+
     }
 }

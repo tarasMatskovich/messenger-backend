@@ -93,12 +93,13 @@ class WampApplication implements ApplicationInterface
     {
         $this->session->on('open', function (ClientSession $session) {
             foreach ($this->actions as $key => $action) {
+                $actionRoute = $action;
                 $action = $this->container->get($action);
-                $session->register($key, function ($arguments) use ($action) {
+                $session->register($key, function ($arguments) use ($action, $actionRoute) {
                     $request = $this->requestBuilder->build();
                     $attributes = json_decode($arguments[0] ?? [], true);
                     $request = $this->requestBuilder->attachAttributesToRequest($request, $attributes);
-                    $pipeline = $this->pipelineBuilder->build();
+                    $pipeline = $this->pipelineBuilder->build($actionRoute);
                     $responseData = $action($pipeline->process($request));
                     return new Response($responseData);
                 });

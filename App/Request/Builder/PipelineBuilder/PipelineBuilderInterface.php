@@ -18,8 +18,9 @@ interface PipelineBuilderInterface
 {
 
     /**
+     * @param string $action
      * @return PipelineInterface
      */
-    public function build(): PipelineInterface;
+    public function build(string $action): PipelineInterface;
 
 }

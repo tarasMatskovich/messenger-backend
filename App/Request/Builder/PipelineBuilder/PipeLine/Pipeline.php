@@ -49,6 +49,9 @@ class Pipeline implements PipelineInterface
     public function process(ServerRequestInterface $request)
     {
         $result = null;
+        if (empty($this->pipes)) {
+            return $request;
+        }
         foreach ($this->pipes as $pipe) {
             if (null === $result) {
                 $result = $pipe($request);
