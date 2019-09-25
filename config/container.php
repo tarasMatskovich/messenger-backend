@@ -5,6 +5,8 @@ namespace Config\container;
 use App\Container\ContainerInterface;
 use App\Domains\Service\Config\Config;
 use App\Domains\Service\Config\ConfigInterface;
+use App\Domains\Service\UserPassword\UserPasswordService;
+use App\Domains\Service\UserPassword\UserPasswordServiceInterface;
 use App\Factory\ApplicationFactory;
 use App\Factory\ApplicationFactoryInterface;
 use App\Factory\User\UserFactory;
@@ -32,7 +34,8 @@ return [
             return new Config($path);
         },
         ValidatorInterface::class => Validator::class,
-        UserFactoryInterface::class => UserFactory::class
+        UserFactoryInterface::class => UserFactory::class,
+        UserPasswordServiceInterface::class => UserPasswordService::class
     ],
     'singletons' => [
 

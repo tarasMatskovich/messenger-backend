@@ -11,6 +11,7 @@ namespace App\Factory\User;
 
 use App\Domains\Entities\User\User;
 use App\Domains\Entities\User\UserInterface;
+use App\Domains\Service\UserPassword\UserPasswordServiceInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -19,6 +20,20 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class UserFactory implements UserFactoryInterface
 {
+
+    /**
+     * @var UserPasswordServiceInterface
+     */
+    private $userPasswordService;
+
+    /**
+     * UserFactory constructor.
+     * @param UserPasswordServiceInterface $userPasswordService
+     */
+    public function __construct(UserPasswordServiceInterface $userPasswordService)
+    {
+        $this->userPasswordService = $userPasswordService;
+    }
 
     /**
      * @param ServerRequestInterface $serverRequest
@@ -30,7 +45,7 @@ class UserFactory implements UserFactoryInterface
         $email = $serverRequest->getAttribute('email');
         $phone = $serverRequest->getAttribute('phone');
         $image = 'test.jpg';
-        $password = $serverRequest->getAttribute('password');
+        $password = $this->userPasswordService->generateHash($serverRequest->getAttribute('password'));
         $user = new User();
         $user->setName($name);
         $user->setEmail($email);
