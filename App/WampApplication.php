@@ -96,7 +96,7 @@ class WampApplication implements ApplicationInterface
                 $action = $this->container->get($action);
                 $session->register($key, function ($arguments) use ($action) {
                     $request = $this->requestBuilder->build();
-                    $attributes = json_decode($arguments[0], true);
+                    $attributes = json_decode($arguments[0] ?? [], true);
                     $request = $this->requestBuilder->attachAttributesToRequest($request, $attributes);
                     $pipeline = $this->pipelineBuilder->build();
                     $responseData = $action($pipeline->process($request));
