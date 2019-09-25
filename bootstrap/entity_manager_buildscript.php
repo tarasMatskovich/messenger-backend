@@ -17,7 +17,7 @@ return function (ContainerInterface $container) {
     $paths = array(
         ROOT . '/App/Domains/Entities/User'
     );
-    $isDevMode = false;
+    $isDevMode = true;
 
     $dbParams = array(
         'driver'   => $config->get('database:driver'),

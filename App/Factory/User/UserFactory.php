@@ -24,11 +24,19 @@ class UserFactory implements UserFactoryInterface
      * @param ServerRequestInterface $serverRequest
      * @return UserInterface
      */
-    public function makeUserFromRequest(ServerRequestInterface $serverRequest): UserInterface
+    public function makeUserFromSignUpRequest(ServerRequestInterface $serverRequest): UserInterface
     {
         $name = $serverRequest->getAttribute('name');
+        $email = $serverRequest->getAttribute('email');
+        $phone = $serverRequest->getAttribute('phone');
+        $image = 'test.jpg';
+        $password = $serverRequest->getAttribute('password');
         $user = new User();
         $user->setName($name);
+        $user->setEmail($email);
+        $user->setPhone($phone);
+        $user->setImage($image);
+        $user->setPassword($password);
         return $user;
     }
 }

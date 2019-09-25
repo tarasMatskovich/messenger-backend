@@ -78,7 +78,7 @@ class SignUp implements ActionInterface
         ])) {
             throw new \Exception('Заповніть всі поля для реєстрації');
         }
-        $user = $this->userFactory->makeUserFromRequest($request);
+        $user = $this->userFactory->makeUserFromSignUpRequest($request);
         $this->userRepository->save($user);
         return [
             'user' => $user->toArray()

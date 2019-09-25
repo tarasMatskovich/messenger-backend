@@ -22,6 +22,6 @@ interface UserFactoryInterface
      * @param ServerRequestInterface $serverRequest
      * @return UserInterface
      */
-    public function makeUserFromRequest(ServerRequestInterface $serverRequest): UserInterface;
+    public function makeUserFromSignUpRequest(ServerRequestInterface $serverRequest): UserInterface;
 
 }
