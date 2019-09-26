@@ -11,6 +11,10 @@ namespace App\Domains\Service\UserPassword;
 
 use App\Domains\Entities\User\UserInterface;
 
+/**
+ * Class UserPasswordService
+ * @package App\Domains\Service\UserPassword
+ */
 class UserPasswordService implements UserPasswordServiceInterface
 {
 
@@ -20,7 +24,6 @@ class UserPasswordService implements UserPasswordServiceInterface
      */
     public function generateHash(string $password): string
     {
-        // TODO - maybe add custom hash generator?
         return password_hash($password, PASSWORD_BCRYPT);
     }
 

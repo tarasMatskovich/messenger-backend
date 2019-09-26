@@ -29,4 +29,11 @@ interface AuthenticationServiceInterface
      */
     public function checkToken(string $token): bool;
 
+    /**
+     * @param UserInterface $user
+     * @param string $password
+     * @return bool
+     */
+    public function verifyUser(UserInterface $user, string $password): bool;
+
 }

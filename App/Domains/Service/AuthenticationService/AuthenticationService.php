@@ -11,6 +11,7 @@ namespace App\Domains\Service\AuthenticationService;
 use App\Domains\Entities\User\UserInterface;
 use App\Domains\Repository\User\UserRepositoryInterface;
 use App\Domains\Service\JWTService\JWTServiceInterface;
+use App\Domains\Service\UserPassword\UserPasswordServiceInterface;
 
 /**
  * Class AuthenticationService
@@ -30,17 +31,25 @@ class AuthenticationService implements AuthenticationServiceInterface
     private $JWTService;
 
     /**
+     * @var UserPasswordServiceInterface
+     */
+    private $userPasswordService;
+
+    /**
      * AuthenticationService constructor.
      * @param UserRepositoryInterface $userRepository
      * @param JWTServiceInterface $JWTService
+     * @param UserPasswordServiceInterface $userPasswordService
      */
     public function __construct(
         UserRepositoryInterface $userRepository,
-        JWTServiceInterface $JWTService
+        JWTServiceInterface $JWTService,
+        UserPasswordServiceInterface $userPasswordService
     )
     {
         $this->userRepository = $userRepository;
         $this->JWTService = $JWTService;
+        $this->userPasswordService = $userPasswordService;
     }
 
     /**
@@ -73,11 +82,14 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     private function makePayload(UserInterface $user): array
     {
+        $data = new \DateTime();
+        $currentTimeStamp = $data->getTimestamp();
+        $expiredTimeStamp = $currentTimeStamp + 300;
         return [
             'iss' => 'auth.securemessenger.com.ua',
             'aud' => 'securemessenger.com.ua',
             'userId' => $user->getId(),
-            'exp' => (new \DateTime('+3 days'))->format("Y-m-d")
+            'exp' => $expiredTimeStamp
         ];
     }
 
@@ -108,18 +120,35 @@ class AuthenticationService implements AuthenticationServiceInterface
         if (false === $this->isValidTokenDate($payload['exp'])) {
             return false;
         }
+        if (false === $this->isValidTokenSign($token)) {
+            return false;
+        }
         return true;
     }
 
     /**
-     * @param $date
+     * @param string $token
+     * @return bool
+     */
+    private function isValidTokenSign(string $token):bool
+    {
+        $parts = $this->explodeToken($token);
+        $header = json_decode(base64_decode($parts[0]), true);
+        $payload = json_decode(base64_decode($parts[1]), true);
+        $sign = $parts[2];
+        $systemToken = $this->JWTService->encode($header, $payload);
+        $systemTokenSign = $this->explodeToken($systemToken)[2];
+        return $sign === $systemTokenSign;
+    }
+
+    /**
+     * @param $expTimestamp
      * @return bool
      * @throws \Exception
      */
-    private function isValidTokenDate($date): bool
+    private function isValidTokenDate($expTimestamp): bool
     {
-        return true;
-        return (new \DateTime())->getTimestamp() >= (new \DateTime($date))->getTimestamp();
+        return (new \DateTime())->getTimestamp() <= $expTimestamp;
     }
 
     /**
@@ -139,6 +168,16 @@ class AuthenticationService implements AuthenticationServiceInterface
     private function explodeToken(string $token): array
     {
         return explode('.', $token);
+    }
+
+    /**
+     * @param UserInterface $user
+     * @param string $password
+     * @return bool
+     */
+    public function verifyUser(UserInterface $user, string $password): bool
+    {
+        return $this->userPasswordService->checkPassword($user, $password);
     }
 
 }

@@ -53,9 +53,16 @@ class SignIn implements ActionInterface
         $password = $request->getAttribute('password');
         $user = $this->userRepository->findOneBy(['email' => $email]);
         if (null === $user) {
-            throw new NotAuthenticatedException('Не вірний email або пароль', 403);
+            throw new NotAuthenticatedException('Користувача за таким email немає у системі', 403);
         }
-        return [];
+        if (!$this->authenticationService->verifyUser($user, $password)) {
+            throw new NotAuthenticatedException('Не вірний пароль. Спробуйте ще раз', 403);
+        }
+        $token = $this->authenticationService->createToken($user);
+        return [
+            'user' => $user->toArray(),
+            'token' => $token
+        ];
 
     }
 }

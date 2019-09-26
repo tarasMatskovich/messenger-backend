@@ -17,4 +17,6 @@ class AlgorithmEnum
 
     const HS_256 = 'HS256';
 
+    const PHP_HS_256 = 'SHA256';
+
 }

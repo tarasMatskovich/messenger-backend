@@ -140,7 +140,10 @@ class User implements UserInterface
     {
         return [
             'id' => $this->getId(),
-            'name' => $this->getName()
+            'name' => $this->getName(),
+            'email' => $this->getEmail(),
+            'phone' => $this->getPhone(),
+            'image' => $this->getImage()
         ];
     }
 }

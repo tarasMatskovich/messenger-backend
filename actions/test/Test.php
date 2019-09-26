@@ -29,7 +29,7 @@ class Test implements ActionInterface
 
     public function __invoke(ServerRequestInterface $request)
     {
-        $id = $request->getAttribute('id');
+        $id = $request->getAttribute('userId');
         $user = $this->userRepository->find($id);
         return [
             'data' => $user->getName(),

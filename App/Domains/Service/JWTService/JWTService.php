@@ -51,7 +51,7 @@ class JWTService implements JWTServiceInterface
         $algorithm = $header['alg'] ?? '';
         switch ($algorithm) {
             case AlgorithmEnum::HS_256:
-                return hash_hmac($algorithm, $unsignedToken, $this->secret);
+                return hash_hmac(AlgorithmEnum::PHP_HS_256, $unsignedToken, $this->secret);
             default:
                 return hash_hmac($algorithm, $unsignedToken, $this->secret);
         }
