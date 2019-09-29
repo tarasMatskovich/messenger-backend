@@ -9,6 +9,9 @@ return [
             'secret' => 'gd6cc27xv2GSc278xc'
         ]
     ],
+    'storage' => [
+        'public' => ROOT  . '/storage/files'
+    ],
     'database' => [
         'db_name' => getenv('DB_NAME'),
         'login' => getenv('DB_LOGIN'),

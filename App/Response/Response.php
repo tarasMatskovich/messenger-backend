@@ -283,7 +283,7 @@ class Response implements ResponseInterface, JsonSerializable
      * Return an instance with the specified header appended with the given value.
      *
      * Existing values for the specified header will be maintained. The new
-     * value(s) will be appended to the existing list. If the header did not
+     * value(s) will be appended to the existing getlist. If the header did not
      * exist previously, it will be added.
      *
      * This method MUST be implemented in such a way as to retain the

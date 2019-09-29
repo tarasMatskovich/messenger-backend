@@ -9,6 +9,8 @@ use App\Domains\Service\Config\Config;
 use App\Domains\Service\Config\ConfigInterface;
 use App\Domains\Service\JWTService\JWTService;
 use App\Domains\Service\JWTService\JWTServiceInterface;
+use App\Domains\Service\StorageService\StorageService;
+use App\Domains\Service\StorageService\StorageServiceInterface;
 use App\Domains\Service\UserPassword\UserPasswordService;
 use App\Domains\Service\UserPassword\UserPasswordServiceInterface;
 use App\Factory\ApplicationFactory;
@@ -43,7 +45,10 @@ return [
         JWTServiceInterface::class => function (ContainerInterface $container) {
             return new JWTService($container->get('application.config')->get('security:jwt:secret'));
         },
-        AuthenticationServiceInterface::class => AuthenticationService::class
+        AuthenticationServiceInterface::class => AuthenticationService::class,
+        StorageServiceInterface::class => function (ContainerInterface $container) {
+            return new StorageService($container->get('application.config')->get('storage:public'));
+        }
     ],
     'singletons' => [
 

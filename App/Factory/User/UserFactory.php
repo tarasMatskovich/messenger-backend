@@ -11,6 +11,7 @@ namespace App\Factory\User;
 
 use App\Domains\Entities\User\User;
 use App\Domains\Entities\User\UserInterface;
+use App\Domains\Service\StorageService\StorageServiceInterface;
 use App\Domains\Service\UserPassword\UserPasswordServiceInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -27,12 +28,22 @@ class UserFactory implements UserFactoryInterface
     private $userPasswordService;
 
     /**
+     * @var StorageServiceInterface
+     */
+    private $storageService;
+
+    /**
      * UserFactory constructor.
      * @param UserPasswordServiceInterface $userPasswordService
+     * @param StorageServiceInterface $storageService
      */
-    public function __construct(UserPasswordServiceInterface $userPasswordService)
+    public function __construct(
+        UserPasswordServiceInterface $userPasswordService,
+        StorageServiceInterface $storageService
+    )
     {
         $this->userPasswordService = $userPasswordService;
+        $this->storageService = $storageService;
     }
 
     /**
@@ -44,7 +55,7 @@ class UserFactory implements UserFactoryInterface
         $name = $serverRequest->getAttribute('name');
         $email = $serverRequest->getAttribute('email');
         $phone = $serverRequest->getAttribute('phone');
-        $image = 'test.jpg';
+        $image = $this->makeImageToUser($serverRequest->getAttribute('image'));
         $password = $this->userPasswordService->generateHash($serverRequest->getAttribute('password'));
         $user = new User();
         $user->setName($name);
@@ -53,5 +64,12 @@ class UserFactory implements UserFactoryInterface
         $user->setImage($image);
         $user->setPassword($password);
         return $user;
+    }
+
+    public function makeImageToUser(string $encodedImage): string
+    {
+        $filename = $this->storageService->makeUniqueFileName();
+        $this->storageService->uploadFileFromBase64($encodedImage, $filename);
+        return $filename;
     }
 }

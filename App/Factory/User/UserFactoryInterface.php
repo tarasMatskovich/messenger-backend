@@ -24,4 +24,10 @@ interface UserFactoryInterface
      */
     public function makeUserFromSignUpRequest(ServerRequestInterface $serverRequest): UserInterface;
 
+    /**
+     * @param string $encodedFile
+     * @return string
+     */
+    public function makeImageToUser(string $encodedFile): string;
+
 }

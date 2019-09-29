@@ -84,7 +84,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         $data = new \DateTime();
         $currentTimeStamp = $data->getTimestamp();
-        $expiredTimeStamp = $currentTimeStamp + 300;
+        $expiredTimeStamp = $currentTimeStamp + 3000;
         return [
             'iss' => 'auth.securemessenger.com.ua',
             'aud' => 'securemessenger.com.ua',
