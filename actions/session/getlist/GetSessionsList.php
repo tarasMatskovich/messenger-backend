@@ -72,7 +72,7 @@ class GetSessionsList implements ActionInterface
             if (null !== $user) {
                 $sessions = $this->sessionRepository->findUserSessions($user);
                 $users = $this->getSingleUsers($sessions);
-                $sessions = $this->sessionResponder->respondExtendedList($sessions);
+                $sessions = $this->sessionResponder->respondExtendedList($sessions, $user);
                 $users = $this->userResponder->respond($users);
                 $result = array_merge($sessions, $users);
                 return [

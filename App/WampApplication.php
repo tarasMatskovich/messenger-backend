@@ -14,6 +14,7 @@ use Thruway\ClientSession;
 use Thruway\Peer\Client;
 use Thruway\Peer\ClientInterface;
 use Thruway\Transport\PawlTransportProvider;
+use Thruway\Transport\RatchetTransportProvider;
 
 /**
  * Class WampApplication
@@ -92,6 +93,7 @@ class WampApplication implements ApplicationInterface
     public function run()
     {
         $this->session->on('open', function (ClientSession $session) {
+            $this->container->set('application.clientSession', $session);
             foreach ($this->actions as $key => $action) {
                 $actionRoute = $action;
                 $action = $this->container->get($action);

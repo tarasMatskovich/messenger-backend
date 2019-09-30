@@ -68,4 +68,16 @@ class Session implements SessionInterface
     {
         $this->user2Id = $user2Id;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+           return [
+               'id' => $this->id,
+               'user1Id' => $this->user1Id,
+               'user2Id' => $this->user2Id
+           ];
+    }
 }

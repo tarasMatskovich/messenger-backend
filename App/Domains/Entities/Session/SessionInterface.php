@@ -37,4 +37,9 @@ interface SessionInterface
      */
     public function setUser2Id($user2Id);
 
+    /**
+     * @return array
+     */
+    public function toArray();
+
 }

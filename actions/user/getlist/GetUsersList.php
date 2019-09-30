@@ -6,6 +6,7 @@ use actions\ActionInterface;
 use App\Domains\Repository\User\UserRepositoryInterface;
 use App\Domains\Responder\User\UserResponder;
 use Psr\Http\Message\ServerRequestInterface;
+use Thruway\ClientSession;
 
 /**
  * Class GetUsersList

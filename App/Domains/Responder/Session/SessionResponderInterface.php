@@ -9,6 +9,7 @@
 namespace App\Domains\Responder\Session;
 
 use App\Domains\Entities\Session\SessionInterface;
+use App\Domains\Entities\User\UserInterface;
 
 /**
  * Interface SessionResponderInterface
@@ -19,8 +20,9 @@ interface SessionResponderInterface
 
     /**
      * @param SessionInterface[] $sessions
+     * @param UserInterface $user
      * @return array
      */
-    public function respondExtendedList(array $sessions);
+    public function respondExtendedList(array $sessions, UserInterface $user);
 
 }

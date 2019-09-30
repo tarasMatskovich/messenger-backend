@@ -3,6 +3,8 @@
 namespace bootstrap;
 
 use actions\auth\CheckAuth;
+use actions\message\create\CreateMessage;
+use actions\session\create\CreateSession;
 use actions\session\getlist\GetSessionsList;
 use actions\test\NotTest;
 use actions\test\Test;
@@ -16,7 +18,9 @@ use App\Domains\Entities\User\User;
 use App\Domains\Responder\Session\SessionResponder;
 use App\Domains\Responder\User\UserResponder;
 use App\Domains\Service\AuthenticationService\AuthenticationServiceInterface;
+use App\Domains\Service\MessageService\MessageServiceInterface;
 use App\Domains\Service\StorageService\StorageServiceInterface;
+use App\Factory\Message\MessageFactoryInterface;
 use App\Factory\User\UserFactoryInterface;
 use App\Request\Validator\ValidatorInterface;
 
@@ -60,6 +64,20 @@ return function (ContainerInterface $container) {
             new UserResponder(
                 $container->get(StorageServiceInterface::class)
             )
+        );
+    });
+    $container->set('action.session.create', function (ContainerInterface $container) {
+        return new CreateSession(
+            $container->get('application.entityManager')->getRepository(Session::class)
+        );
+    });
+    $container->set('action.message.create', function (ContainerInterface $container) {
+        return new CreateMessage(
+            $container->get('application.entityManager')->getRepository(Message::class),
+            $container->get('application.entityManager')->getRepository(User::class),
+            $container->get('application.entityManager')->getRepository(Session::class),
+            $container->get(MessageFactoryInterface::class),
+            $container->get(MessageServiceInterface::class)
         );
     });
 };

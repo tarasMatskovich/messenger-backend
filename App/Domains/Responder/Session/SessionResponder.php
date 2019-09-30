@@ -81,7 +81,7 @@ class SessionResponder implements SessionResponderInterface
      * @param MessageInterface $message
      * @return array|null
      */
-    private function getUser(MessageInterface $message)
+    private function getUserByMessage(MessageInterface $message)
     {
         $user = $this->userRepository->find($message->getUserId());
         if (null !== $user) {
@@ -93,10 +93,28 @@ class SessionResponder implements SessionResponderInterface
     }
 
     /**
+     * @param SessionInterface $session
+     * @param UserInterface $user
+     * @return array|null
+     */
+    private function getUserBySession(SessionInterface $session, UserInterface $user)
+    {
+        $userId = ($session->getUser1Id() != $user->getId()) ? $session->getUser1Id() : $session->getUser2Id();
+        $user = $this->userRepository->find($userId);
+        if (null !== $user) {
+            $user = $user->toArray();
+            $user['image'] = $this->storageService->getBase64FromFile($user['image']);
+            return $user;
+        }
+        return null;
+    }
+
+    /**
      * @param SessionInterface[] $sessions
+     * @param UserInterface $user
      * @return array
      */
-    public function respondExtendedList(array $sessions)
+    public function respondExtendedList(array $sessions, UserInterface $user)
     {
         $result = [];
         foreach ($sessions as $session) {
@@ -104,13 +122,12 @@ class SessionResponder implements SessionResponderInterface
             $data['sessionId'] = $session->getId();
             $lastMessage = $this->getLastMessage($session);
             $lastMessageArray = null;
-            $data['user'] = null;
+            $data['user'] = $this->getUserBySession($session, $user);
             if (null !== $lastMessage) {
                 $lastMessageArray = $lastMessage->toArray();
-                $lastMessageArray['user'] = $this->getUser($lastMessage);
+                //$lastMessageArray['user'] = $this->getUserBySession();
                 // TODO REMOVE!!!!!
                 $lastMessageArray['date'] = '19:45';
-                $data['user'] = $this->getUser($lastMessage);
             }
             $data['lastMessage'] = $lastMessageArray;
             $result[] = $data;

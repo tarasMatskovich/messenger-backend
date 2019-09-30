@@ -9,12 +9,16 @@ use App\Domains\Service\Config\Config;
 use App\Domains\Service\Config\ConfigInterface;
 use App\Domains\Service\JWTService\JWTService;
 use App\Domains\Service\JWTService\JWTServiceInterface;
+use App\Domains\Service\MessageService\MessageService;
+use App\Domains\Service\MessageService\MessageServiceInterface;
 use App\Domains\Service\StorageService\StorageService;
 use App\Domains\Service\StorageService\StorageServiceInterface;
 use App\Domains\Service\UserPassword\UserPasswordService;
 use App\Domains\Service\UserPassword\UserPasswordServiceInterface;
 use App\Factory\ApplicationFactory;
 use App\Factory\ApplicationFactoryInterface;
+use App\Factory\Message\MessageFactory;
+use App\Factory\Message\MessageFactoryInterface;
 use App\Factory\User\UserFactory;
 use App\Factory\User\UserFactoryInterface;
 use App\Request\Builder\RequestBuilder;
@@ -48,6 +52,12 @@ return [
         AuthenticationServiceInterface::class => AuthenticationService::class,
         StorageServiceInterface::class => function (ContainerInterface $container) {
             return new StorageService($container->get('application.config')->get('storage:public'));
+        },
+        MessageFactoryInterface::class => MessageFactory::class,
+        MessageServiceInterface::class => function (ContainerInterface $container) {
+            return new MessageService(
+                $container->get('application.clientSession')
+            );
         }
     ],
     'singletons' => [
