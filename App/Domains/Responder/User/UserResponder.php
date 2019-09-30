@@ -38,7 +38,9 @@ class UserResponder implements UserResponderInterface
         foreach ($users as $user) {
             $userData = $user->toArray();
             $userData['image'] = $this->storageService->getBase64FromFile($userData['image']);
-            $response[] = $userData;
+            $response[] = [
+                'user' => $userData
+            ];
         }
         return $response;
     }

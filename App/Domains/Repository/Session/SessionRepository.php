@@ -4,6 +4,7 @@
 namespace App\Domains\Repository\Session;
 
 use App\Domains\Entities\Session\SessionInterface;
+use App\Domains\Entities\User\UserInterface;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -24,4 +25,16 @@ class SessionRepository extends EntityRepository implements SessionRepositoryInt
         $this->_em->flush();
     }
 
+    /**
+     * @param UserInterface $user
+     * @return SessionInterface[]
+     */
+    public function findUserSessions(UserInterface $user)
+    {
+        return $this->createQueryBuilder('session')
+            ->andWhere('session.user1Id = :value OR session.user2Id = :value')
+            ->setParameter('value', $user->getId())
+            ->getQuery()
+            ->execute();
+    }
 }

@@ -59,4 +59,9 @@ interface MessageInterface
      */
     public function setContent($content);
 
+    /**
+     * @return array
+     */
+    public function toArray();
+
 }

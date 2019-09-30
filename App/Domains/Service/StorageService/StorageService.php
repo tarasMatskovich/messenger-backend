@@ -53,6 +53,6 @@ class StorageService implements StorageServiceInterface
     {
         $imageSize = getimagesize($this->path . '/' . $name);
         $imageData = base64_encode(file_get_contents($this->path . '/' . $name));
-        return "data:{$imageSize['mime']};base64,{$imageData}' {$imageSize[3]}";
+        return "data:{$imageSize['mime']};base64,{$imageData}";
     }
 }

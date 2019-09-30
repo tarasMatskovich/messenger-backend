@@ -31,4 +31,10 @@ interface UserRepositoryInterface extends ObjectRepository
      */
     public function save(UserInterface $user);
 
+    /**
+     * @param array $userIds
+     * @return UserInterface[]
+     */
+    public function findExceptIds(array $userIds);
+
 }

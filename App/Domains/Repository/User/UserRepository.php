@@ -19,4 +19,17 @@ class UserRepository extends EntityRepository implements UserRepositoryInterface
         $this->_em->persist($user);
         $this->_em->flush();
     }
+
+    /**
+     * @param array $userIds
+     * @return UserInterface[]
+     */
+    public function findExceptIds(array $userIds)
+    {
+        $db = $this->createQueryBuilder('users');
+        return $db
+            ->where($db->expr()->notIn('users.id', $userIds))
+            ->getQuery()
+            ->execute();
+    }
 }

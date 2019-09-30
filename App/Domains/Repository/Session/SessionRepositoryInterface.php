@@ -4,6 +4,7 @@
 namespace App\Domains\Repository\Session;
 
 use App\Domains\Entities\Session\SessionInterface;
+use App\Domains\Entities\User\UserInterface;
 use Doctrine\Common\Persistence\ObjectRepository;
 
 /**
@@ -24,6 +25,17 @@ interface SessionRepositoryInterface extends ObjectRepository
      * @return SessionInterface|null
      */
     public function findOneBy(array $criteria);
+
+    /**
+     * @param UserInterface $user
+     * @return SessionInterface[]
+     */
+    public function findUserSessions(UserInterface $user);
+
+    /**
+     * @return SessionInterface[]
+     */
+    public function findAll();
 
     /**
      * @param SessionInterface $session

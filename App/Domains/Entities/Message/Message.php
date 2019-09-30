@@ -112,4 +112,18 @@ class Message implements MessageInterface
     {
         $this->content = $content;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'id' => $this->id,
+            'sessionId' => $this->sessionId,
+            'userId' => $this->userId,
+            'type' => $this->type,
+            'content' => $this->content
+        ];
+    }
 }
