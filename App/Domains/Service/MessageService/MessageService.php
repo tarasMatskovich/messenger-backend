@@ -10,6 +10,7 @@ namespace App\Domains\Service\MessageService;
 
 use App\Domains\Entities\Message\MessageInterface;
 use App\Domains\Entities\Session\SessionInterface;
+use App\Domains\Responder\Message\MessageResponderInterface;
 use App\Domains\Service\EventService\EventsEnum;
 use Thruway\ClientSession;
 
@@ -26,14 +27,22 @@ class MessageService implements MessageServiceInterface
     private $clientSession;
 
     /**
+     * @var MessageResponderInterface
+     */
+    private $messageResponder;
+
+    /**
      * MessageService constructor.
      * @param ClientSession $clientSession
+     * @param MessageResponderInterface $messageResponder
      */
     public function __construct(
-        ClientSession $clientSession
+        ClientSession $clientSession,
+        MessageResponderInterface $messageResponder
     )
     {
         $this->clientSession = $clientSession;
+        $this->messageResponder = $messageResponder;
     }
 
 
@@ -44,6 +53,9 @@ class MessageService implements MessageServiceInterface
      */
     public function publishMessage(SessionInterface $session, MessageInterface $message)
     {
-        $this->clientSession->publish('user.session.' . $session->getId(), [EventsEnum::MESSAGE, json_encode($message->toArray())]);
+        $this->clientSession->publish('user.session.' . $session->getId(), [
+            EventsEnum::MESSAGE,
+            json_encode($this->messageResponder->respondMessage($message))
+        ]);
     }
 }

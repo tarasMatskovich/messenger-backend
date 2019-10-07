@@ -36,12 +36,30 @@ class UserResponder implements UserResponderInterface
     {
         $response = [];
         foreach ($users as $user) {
-            $userData = $user->toArray();
-            $userData['image'] = $this->storageService->getBase64FromFile($userData['image']);
             $response[] = [
-                'user' => $userData
+                'user' => $this->getUserFullData($user)
             ];
         }
         return $response;
+    }
+
+    /**
+     * @param UserInterface $user
+     * @return array
+     */
+    private function getUserFullData(UserInterface $user)
+    {
+        $userData = $user->toArray();
+        $userData['image'] = $this->storageService->getBase64FromFile($userData['image']);
+        return $userData;
+    }
+
+    /**
+     * @param UserInterface $user
+     * @return array
+     */
+    public function respondUser(UserInterface $user)
+    {
+        return $this->getUserFullData($user);
     }
 }

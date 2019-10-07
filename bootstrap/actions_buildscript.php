@@ -4,7 +4,9 @@ namespace bootstrap;
 
 use actions\auth\CheckAuth;
 use actions\message\create\CreateMessage;
+use actions\message\getlist\GetMessagesList;
 use actions\session\create\CreateSession;
+use actions\session\get\GetSession;
 use actions\session\getlist\GetSessionsList;
 use actions\test\NotTest;
 use actions\test\Test;
@@ -15,6 +17,7 @@ use App\container\ContainerInterface;
 use App\Domains\Entities\Message\Message;
 use App\Domains\Entities\Session\Session;
 use App\Domains\Entities\User\User;
+use App\Domains\Responder\Message\MessageResponder;
 use App\Domains\Responder\Session\SessionResponder;
 use App\Domains\Responder\User\UserResponder;
 use App\Domains\Service\AuthenticationService\AuthenticationServiceInterface;
@@ -52,6 +55,11 @@ return function (ContainerInterface $container) {
             new UserResponder($container->get(StorageServiceInterface::class))
         );
     });
+    $container->set('action.session.get', function (ContainerInterface $container) {
+        return new GetSession(
+            $container->get('application.entityManager')->getRepository(Session::class)
+        );
+    });
     $container->set('action.session.getlist', function (ContainerInterface $container) {
         return new GetSessionsList(
             $container->get('application.entityManager')->getRepository(User::class),
@@ -78,6 +86,18 @@ return function (ContainerInterface $container) {
             $container->get('application.entityManager')->getRepository(Session::class),
             $container->get(MessageFactoryInterface::class),
             $container->get(MessageServiceInterface::class)
+        );
+    });
+    $container->set('action.message.getlist', function (ContainerInterface $container) {
+        return new GetMessagesList(
+            $container->get('application.entityManager')->getRepository(Message::class),
+            $container->get('application.entityManager')->getRepository(Session::class),
+            new MessageResponder(
+                new UserResponder(
+                    $container->get(StorageServiceInterface::class)
+                ),
+                $container->get('application.entityManager')->getRepository(User::class)
+            )
         );
     });
 };

@@ -17,4 +17,10 @@ interface UserResponderInterface
      */
     public function respond(array $users);
 
+    /**
+     * @param UserInterface $user
+     * @return array
+     */
+    public function respondUser(UserInterface $user);
+
 }

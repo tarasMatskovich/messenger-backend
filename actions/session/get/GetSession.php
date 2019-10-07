@@ -13,6 +13,10 @@ use actions\ActionInterface;
 use App\Domains\Repository\Session\SessionRepositoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Class GetSession
+ * @package actions\session\get
+ */
 class GetSession implements ActionInterface
 {
 

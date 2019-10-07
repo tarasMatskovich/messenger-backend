@@ -3,6 +3,9 @@
 namespace Config\container;
 
 use App\Container\ContainerInterface;
+use App\Domains\Entities\User\User;
+use App\Domains\Responder\Message\MessageResponder;
+use App\Domains\Responder\User\UserResponder;
 use App\Domains\Service\AuthenticationService\AuthenticationService;
 use App\Domains\Service\AuthenticationService\AuthenticationServiceInterface;
 use App\Domains\Service\Config\Config;
@@ -56,7 +59,13 @@ return [
         MessageFactoryInterface::class => MessageFactory::class,
         MessageServiceInterface::class => function (ContainerInterface $container) {
             return new MessageService(
-                $container->get('application.clientSession')
+                $container->get('application.clientSession'),
+                new MessageResponder(
+                    new UserResponder(
+                        $container->get(StorageServiceInterface::class)
+                    ),
+                    $container->get('application.entityManager')->getRepository(User::class)
+                )
             );
         }
     ],

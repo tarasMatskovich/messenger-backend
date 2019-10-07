@@ -7,6 +7,7 @@ use App\Domains\Service\Config\ConfigInterface;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
+use PDO;
 
 
 return function (ContainerInterface $container) {
@@ -27,6 +28,14 @@ return function (ContainerInterface $container) {
         'port' => $config->get('database:port'),
         'dbname'   => $config->get('database:db_name'),
     );
+    $dsn = "mysql:host={$config->get('database:host')};dbname={$config->get('database:db_name')}";
+    $opt = [
+        1005=>1024*1024*50
+    ];
+    $pdo = new PDO($dsn, $config->get('database:login'), $config->get('database:password'), $opt);
+    $dbParams = [
+        'pdo' => $pdo
+    ];
 
     $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
     $entityManager = EntityManager::create($dbParams, $config);
