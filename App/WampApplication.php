@@ -5,6 +5,7 @@ namespace App;
 
 use actions\ActionInterface;
 use App\Container\ContainerInterface;
+use App\EventListener\EventListenerInterface;
 use App\Request\Builder\PipelineBuilder\PipelineBuilderInterface;
 use App\Request\Builder\RequestBuilderInterface;
 use App\Response\Response;
@@ -106,7 +107,30 @@ class WampApplication implements ApplicationInterface
                     return new Response($responseData);
                 });
             }
+            $this->registerListeners($session);
         });
         $this->session->start();
+    }
+
+    /**
+     * @param ClientSession $session
+     */
+    private function registerListeners(ClientSession $session)
+    {
+        /**
+         * @var EventListenerInterface $eventListener
+         */
+        $eventListener = $this->container->get(EventListenerInterface::class);
+        $channels = $eventListener->getChannels();
+        foreach ($channels as $channelKey => $channelValue) {
+            $listener = $this->container->get($channelValue);
+            $session->subscribe($channelKey, function ($arguments) use ($listener) {
+                $request = $this->requestBuilder->build();
+                $attributes = json_decode($arguments[0] ?? [], true);
+                $request = $this->requestBuilder->attachAttributesToRequest($request, $attributes);
+                $responseData = $listener($request);
+                return new Response($responseData);
+            });
+        }
     }
 }

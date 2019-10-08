@@ -14,7 +14,8 @@
         "psr-4": {
             "App\\": "App/",
             "Services\\": "Services/",
-            "actions\\": "actions/"
+            "actions\\": "actions/",
+            "listeners\\": "listeners/"
         }
     }
 }

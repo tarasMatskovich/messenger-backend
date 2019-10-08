@@ -11,6 +11,7 @@ use actions\session\getlist\GetSessionsList;
 use actions\test\NotTest;
 use actions\test\Test;
 use actions\user\getlist\GetUsersList;
+use actions\user\online\getlist\GetOnlineUserList;
 use actions\user\signin\SignIn;
 use actions\user\signup\SignUp;
 use App\container\ContainerInterface;
@@ -23,6 +24,7 @@ use App\Domains\Responder\User\UserResponder;
 use App\Domains\Service\AuthenticationService\AuthenticationServiceInterface;
 use App\Domains\Service\MessageService\MessageServiceInterface;
 use App\Domains\Service\StorageService\StorageServiceInterface;
+use App\Domains\Service\UserNetworkStatusService\UserNetworkStatusServiceInterface;
 use App\Factory\Message\MessageFactoryInterface;
 use App\Factory\User\UserFactoryInterface;
 use App\Request\Validator\ValidatorInterface;
@@ -98,6 +100,11 @@ return function (ContainerInterface $container) {
                 ),
                 $container->get('application.entityManager')->getRepository(User::class)
             )
+        );
+    });
+    $container->set('action.user.online.getlist', function (ContainerInterface $container) {
+        return new GetOnlineUserList(
+            $container->get(UserNetworkStatusServiceInterface::class)
         );
     });
 };

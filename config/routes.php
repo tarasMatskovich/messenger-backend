@@ -7,6 +7,7 @@ return [
     'action.user.signin' => 'action.user.signin',
     'action.auth.check' => 'action.auth.check',
     'action.user.getlist' => 'action.user.getlist',
+    'action.user.online.getlist' => 'action.user.online.getlist',
     'action.session.get' => 'action.session.get',
     'action.session.getlist' => 'action.session.getlist',
     'action.session.create' => 'action.session.create',

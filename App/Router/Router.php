@@ -18,6 +18,10 @@ class Router implements RouterInterface
      */
     private $routes;
 
+    /**
+     * Router constructor.
+     * @param array $routes
+     */
     public function __construct(array $routes)
     {
         $this->routes = $routes;

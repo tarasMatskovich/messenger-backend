@@ -16,8 +16,12 @@ use App\Domains\Service\MessageService\MessageService;
 use App\Domains\Service\MessageService\MessageServiceInterface;
 use App\Domains\Service\StorageService\StorageService;
 use App\Domains\Service\StorageService\StorageServiceInterface;
+use App\Domains\Service\UserNetworkStatusService\UserNetworkStatusService;
+use App\Domains\Service\UserNetworkStatusService\UserNetworkStatusServiceInterface;
 use App\Domains\Service\UserPassword\UserPasswordService;
 use App\Domains\Service\UserPassword\UserPasswordServiceInterface;
+use App\EventListener\EventListener;
+use App\EventListener\EventListenerInterface;
 use App\Factory\ApplicationFactory;
 use App\Factory\ApplicationFactoryInterface;
 use App\Factory\Message\MessageFactory;
@@ -42,6 +46,12 @@ return [
         RouterFactoryInterface::class => RouterFactory::class,
         HttpRouterInterface::class => HttpRouter::class,
         RouterInterface::class => Router::class,
+        EventListenerInterface::class => function () {
+            $channels = require ROOT . '/config/channels.php';
+            return new EventListener(
+                $channels
+            );
+        },
         "application.config" => function () {
             $path = ROOT . '/config/config.current.php';
             return new Config($path);
@@ -70,6 +80,6 @@ return [
         }
     ],
     'singletons' => [
-
+        UserNetworkStatusServiceInterface::class => new UserNetworkStatusService()
     ]
 ];
