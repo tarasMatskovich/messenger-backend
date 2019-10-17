@@ -20,7 +20,7 @@ environments:
         name: test
         user: root
         pass: ''
-        port: 3307
+        port: 3306
         charset: utf8
 
     testing:

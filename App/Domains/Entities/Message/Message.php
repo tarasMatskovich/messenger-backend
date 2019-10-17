@@ -38,6 +38,11 @@ class Message implements MessageInterface
     private $content;
 
     /**
+     * @\Doctrine\ORM\Mapping\Column(name="created_at")
+     */
+    private $createdAt;
+
+    /**
      * @return integer
      */
     public function getId()
@@ -114,6 +119,22 @@ class Message implements MessageInterface
     }
 
     /**
+     * @return string
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
      * @return array
      */
     public function toArray()
@@ -123,7 +144,8 @@ class Message implements MessageInterface
             'sessionId' => $this->sessionId,
             'userId' => $this->userId,
             'type' => $this->type,
-            'content' => $this->content
+            'content' => $this->content,
+            'createdAt' => $this->createdAt
         ];
     }
 }

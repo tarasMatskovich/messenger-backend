@@ -26,6 +26,7 @@ class MessageFactory implements MessageFactoryInterface
      * @param UserInterface $user
      * @param string $content
      * @return MessageInterface
+     * @throws \Exception
      */
     public function createForSend(SessionInterface $session, UserInterface $user, string $content): MessageInterface
     {
@@ -34,6 +35,7 @@ class MessageFactory implements MessageFactoryInterface
         $message->setUserId($user->getId());
         $message->setType(0);
         $message->setContent($content);
+        $message->setCreatedAt((new \DateTime())->format('Y-m-d H:i:s'));
         return $message;
     }
 
@@ -42,6 +44,7 @@ class MessageFactory implements MessageFactoryInterface
      * @param UserInterface $user
      * @param string $content
      * @return MessageInterface
+     * @throws \Exception
      */
     public function createForReceiver(SessionInterface $session, UserInterface $user, string $content): MessageInterface
     {
@@ -50,6 +53,7 @@ class MessageFactory implements MessageFactoryInterface
         $message->setUserId($user->getId());
         $message->setType(1);
         $message->setContent($content);
+        $message->setCreatedAt((new \DateTime())->format('Y-m-d H:i:s'));
         return $message;
     }
 }

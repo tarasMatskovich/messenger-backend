@@ -65,7 +65,7 @@ class SessionResponder implements SessionResponderInterface
             ->findBy(
                 [
                     'sessionId' => $session->getId(),
-                    'type' => 0
+                    'type' => 1
                 ],
                 [
                     'id' => 'DESC'
@@ -125,9 +125,10 @@ class SessionResponder implements SessionResponderInterface
             $data['user'] = $this->getUserBySession($session, $user);
             if (null !== $lastMessage) {
                 $lastMessageArray = $lastMessage->toArray();
-                //$lastMessageArray['user'] = $this->getUserBySession();
-                // TODO REMOVE!!!!!
-                $lastMessageArray['date'] = '19:45';
+                $lastMessageUser = $this->userRepository->find($lastMessage->getUserId());
+                if (null !== $lastMessageUser) {
+                    $lastMessageArray['user'] = $this->getUserBySession($session, $lastMessageUser);
+                }
             }
             $data['lastMessage'] = $lastMessageArray;
             $result[] = $data;

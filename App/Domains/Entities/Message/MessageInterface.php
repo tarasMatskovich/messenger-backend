@@ -60,6 +60,17 @@ interface MessageInterface
     public function setContent($content);
 
     /**
+     * @return string
+     */
+    public function getCreatedAt();
+
+    /**
+     * @param $createdAt
+     * @return void
+     */
+    public function setCreatedAt($createdAt);
+
+    /**
      * @return array
      */
     public function toArray();
