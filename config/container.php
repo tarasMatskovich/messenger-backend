@@ -8,8 +8,13 @@ use App\Domains\Responder\Message\MessageResponder;
 use App\Domains\Responder\User\UserResponder;
 use App\Domains\Service\AuthenticationService\AuthenticationService;
 use App\Domains\Service\AuthenticationService\AuthenticationServiceInterface;
+use App\Domains\Service\Base32EncoderService\Base32FixedNotationEncoder;
+use App\Domains\Service\Base32EncoderService\Base32Interface;
 use App\Domains\Service\Config\Config;
 use App\Domains\Service\Config\ConfigInterface;
+use App\Domains\Service\GoogleAuthenticatorService\AlwaysNewGoogleAuthenticator;
+use App\Domains\Service\GoogleAuthenticatorService\GoogleAuthenticatorService;
+use App\Domains\Service\GoogleAuthenticatorService\GoogleAuthenticatorServiceInterface;
 use App\Domains\Service\JWTService\JWTService;
 use App\Domains\Service\JWTService\JWTServiceInterface;
 use App\Domains\Service\MessageService\MessageService;
@@ -20,6 +25,8 @@ use App\Domains\Service\UserNetworkStatusService\UserNetworkStatusService;
 use App\Domains\Service\UserNetworkStatusService\UserNetworkStatusServiceInterface;
 use App\Domains\Service\UserPassword\UserPasswordService;
 use App\Domains\Service\UserPassword\UserPasswordServiceInterface;
+use App\Domains\Service\UserTOTPService\UserTOTPService;
+use App\Domains\Service\UserTOTPService\UserTOTPServiceInterface;
 use App\EventListener\EventListener;
 use App\EventListener\EventListenerInterface;
 use App\Factory\ApplicationFactory;
@@ -76,6 +83,20 @@ return [
                     ),
                     $container->get('application.entityManager')->getRepository(User::class)
                 )
+            );
+        },
+        Base32Interface::class => Base32FixedNotationEncoder::class,
+        GoogleAuthenticatorServiceInterface::class => function (ContainerInterface $container) {
+            return new GoogleAuthenticatorService(
+                new AlwaysNewGoogleAuthenticator()
+            );
+        },
+        UserTOTPServiceInterface::class => function (ContainerInterface $container) {
+            return new UserTOTPService(
+              $container->get(GoogleAuthenticatorServiceInterface::class),
+              $container->get(Base32Interface::class),
+              $container->get('application.config')->get('security:secondFactor:salt'),
+              'Messenger'
             );
         }
     ],

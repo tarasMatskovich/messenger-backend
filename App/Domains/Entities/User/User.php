@@ -46,6 +46,11 @@ class User implements UserInterface
     private $password;
 
     /**
+     * @\Doctrine\ORM\Mapping\Column(name="second_factor")
+     */
+    private $secondFactor;
+
+    /**
      * @return int
      */
     public function getId()
@@ -134,6 +139,22 @@ class User implements UserInterface
     }
 
     /**
+     * @return string
+     */
+    public function getSecondFactor()
+    {
+        return $this->secondFactor;
+    }
+
+    /**
+     * @param $secondFactor
+     */
+    public function setSecondFactor($secondFactor)
+    {
+        $this->secondFactor = $secondFactor;
+    }
+
+    /**
      * @return array
      */
     public function toArray()
@@ -143,7 +164,8 @@ class User implements UserInterface
             'name' => $this->getName(),
             'email' => $this->getEmail(),
             'phone' => $this->getPhone(),
-            'image' => $this->getImage()
+            'image' => $this->getImage(),
+            'secondFactor' => $this->getSecondFactor()
         ];
     }
 }

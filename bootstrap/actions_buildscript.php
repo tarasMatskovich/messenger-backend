@@ -10,6 +10,9 @@ use actions\session\get\GetSession;
 use actions\session\getlist\GetSessionsList;
 use actions\test\NotTest;
 use actions\test\Test;
+use actions\user\auth\secondfactor\get\GetUser2FA;
+use actions\user\auth\secondfactor\getinfo\GetUserSecondFactorInfo;
+use actions\user\auth\secondfactor\set\SetUser2FA;
 use actions\user\edit\EditUser;
 use actions\user\get\GetUser;
 use actions\user\getlist\GetUsersList;
@@ -27,6 +30,7 @@ use App\Domains\Service\AuthenticationService\AuthenticationServiceInterface;
 use App\Domains\Service\MessageService\MessageServiceInterface;
 use App\Domains\Service\StorageService\StorageServiceInterface;
 use App\Domains\Service\UserNetworkStatusService\UserNetworkStatusServiceInterface;
+use App\Domains\Service\UserTOTPService\UserTOTPServiceInterface;
 use App\Factory\Message\MessageFactoryInterface;
 use App\Factory\User\UserFactoryInterface;
 use App\Request\Validator\ValidatorInterface;
@@ -123,4 +127,22 @@ return function (ContainerInterface $container) {
             $container->get('application.entityManager')->getRepository(User::class)
         );
     });
+    $container->set('action.user.auth.secondfactor.get', function (ContainerInterface $container) {
+        return new GetUser2FA(
+            $container->get('application.entityManager')->getRepository(User::class)
+        );
+    });
+    $container->set('action.user.auth.secondfactor.set', function (ContainerInterface $container) {
+        return new SetUser2FA(
+            $container->get('application.entityManager')->getRepository(User::class),
+            $container->get(UserTOTPServiceInterface::class)
+        );
+    });
+    $container->set('action.user.auth.secondfactor.getinfo', function (ContainerInterface $container) {
+        return new GetUserSecondFactorInfo(
+            $container->get('application.entityManager')->getRepository(User::class),
+            $container->get(AuthenticationServiceInterface::class)
+        );
+    });
+
 };

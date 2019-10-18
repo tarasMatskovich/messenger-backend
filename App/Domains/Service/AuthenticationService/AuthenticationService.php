@@ -51,12 +51,14 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function __construct(
         UserRepositoryInterface $userRepository,
         JWTServiceInterface $JWTService,
-        UserPasswordServiceInterface $userPasswordService
+        UserPasswordServiceInterface $userPasswordService,
+        UserTOTPServiceInterface $userTOTPService
     )
     {
         $this->userRepository = $userRepository;
         $this->JWTService = $JWTService;
         $this->userPasswordService = $userPasswordService;
+        $this->userTOTPService = $userTOTPService;
     }
 
     /**
@@ -187,4 +189,22 @@ class AuthenticationService implements AuthenticationServiceInterface
         return $this->userPasswordService->checkPassword($user, $password);
     }
 
+    /**
+     * @param UserInterface $user
+     * @return string
+     */
+    public function getQrCodeUrl(UserInterface $user): string
+    {
+        return $this->userTOTPService->getQrCodeUrl($user);
+    }
+
+    /**
+     * @param UserInterface $user
+     * @param string $code
+     * @return bool
+     */
+    public function checkCode(UserInterface $user, string $code): bool
+    {
+        return $this->userTOTPService->checkCode($user, $code);
+    }
 }

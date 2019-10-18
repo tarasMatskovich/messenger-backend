@@ -71,6 +71,17 @@ interface UserInterface
     public function setPassword($password);
 
     /**
+     * @return string
+     */
+    public function getSecondFactor();
+
+    /**
+     * @param $secondFactor
+     * @return void
+     */
+    public function setSecondFactor($secondFactor);
+
+    /**
      * @return array
      */
     public function toArray();

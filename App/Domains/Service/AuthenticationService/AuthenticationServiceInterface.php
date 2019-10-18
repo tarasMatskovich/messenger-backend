@@ -36,4 +36,17 @@ interface AuthenticationServiceInterface
      */
     public function verifyUser(UserInterface $user, string $password): bool;
 
+    /**
+     * @param UserInterface $user
+     * @return string
+     */
+    public function getQrCodeUrl(UserInterface $user): string;
+
+    /**
+     * @param UserInterface $user
+     * @param string $code
+     * @return bool
+     */
+    public function checkCode(UserInterface $user, string $code): bool;
+
 }

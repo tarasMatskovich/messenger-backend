@@ -14,5 +14,8 @@ return [
     'action.message.create' => 'action.message.create',
     'action.message.getlist' => 'action.message.getlist',
     'action.user.get' => 'action.user.get',
-    'action.user.edit' => 'action.user.edit'
+    'action.user.edit' => 'action.user.edit',
+    'action.user.auth.secondfactor.get' => 'action.user.auth.secondfactor.get',
+    'action.user.auth.secondfactor.set' => 'action.user.auth.secondfactor.set',
+    'action.user.auth.secondfactor.getinfo' => 'action.user.auth.secondfactor.getinfo'
 ];
