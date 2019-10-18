@@ -11,6 +11,7 @@ namespace App\Factory\User;
 
 use App\Domains\Entities\User\User;
 use App\Domains\Entities\User\UserInterface;
+use App\Domains\Repository\User\UserRepositoryInterface;
 use App\Domains\Service\StorageService\StorageServiceInterface;
 use App\Domains\Service\UserPassword\UserPasswordServiceInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,17 +34,25 @@ class UserFactory implements UserFactoryInterface
     private $storageService;
 
     /**
+     * @var UserRepositoryInterface
+     */
+    private $userRepository;
+
+    /**
      * UserFactory constructor.
      * @param UserPasswordServiceInterface $userPasswordService
      * @param StorageServiceInterface $storageService
+     * @param UserRepositoryInterface $userRepository
      */
     public function __construct(
         UserPasswordServiceInterface $userPasswordService,
-        StorageServiceInterface $storageService
+        StorageServiceInterface $storageService,
+        UserRepositoryInterface $userRepository
     )
     {
         $this->userPasswordService = $userPasswordService;
         $this->storageService = $storageService;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -71,5 +80,22 @@ class UserFactory implements UserFactoryInterface
         $filename = $this->storageService->makeUniqueFileName();
         $this->storageService->uploadFileFromBase64($encodedImage, $filename);
         return $filename;
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return UserInterface
+     */
+    public function makeUserFromEditRequest(ServerRequestInterface $request): UserInterface
+    {
+        $userId = $request->getAttribute('userId');
+        $name = $request->getAttribute('name');
+        $phone = $request->getAttribute('phone');
+        $image = $this->makeImageToUser($request->getAttribute('image'));
+        $user = $this->userRepository->find($userId);
+        $user->setName($name);
+        $user->setPhone($phone);
+        $user->setImage($image);
+        return $user;
     }
 }

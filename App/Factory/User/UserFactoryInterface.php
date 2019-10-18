@@ -30,4 +30,10 @@ interface UserFactoryInterface
      */
     public function makeImageToUser(string $encodedFile): string;
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return UserInterface
+     */
+    public function makeUserFromEditRequest(ServerRequestInterface $request): UserInterface;
+
 }

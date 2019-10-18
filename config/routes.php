@@ -12,5 +12,7 @@ return [
     'action.session.getlist' => 'action.session.getlist',
     'action.session.create' => 'action.session.create',
     'action.message.create' => 'action.message.create',
-    'action.message.getlist' => 'action.message.getlist'
+    'action.message.getlist' => 'action.message.getlist',
+    'action.user.get' => 'action.user.get',
+    'action.user.edit' => 'action.user.edit'
 ];

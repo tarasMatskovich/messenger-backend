@@ -10,6 +10,8 @@ use actions\session\get\GetSession;
 use actions\session\getlist\GetSessionsList;
 use actions\test\NotTest;
 use actions\test\Test;
+use actions\user\edit\EditUser;
+use actions\user\get\GetUser;
 use actions\user\getlist\GetUsersList;
 use actions\user\online\getlist\GetOnlineUserList;
 use actions\user\signin\SignIn;
@@ -105,6 +107,20 @@ return function (ContainerInterface $container) {
     $container->set('action.user.online.getlist', function (ContainerInterface $container) {
         return new GetOnlineUserList(
             $container->get(UserNetworkStatusServiceInterface::class)
+        );
+    });
+    $container->set('action.user.get', function (ContainerInterface $container) {
+        return new GetUser(
+            $container->get('application.entityManager')->getRepository(User::class),
+            new UserResponder(
+                $container->get(StorageServiceInterface::class)
+            )
+        );
+    });
+    $container->set('action.user.edit', function (ContainerInterface $container) {
+        return new EditUser(
+            $container->get(UserFactoryInterface::class),
+            $container->get('application.entityManager')->getRepository(User::class)
         );
     });
 };

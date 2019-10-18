@@ -5,6 +5,9 @@ return [
 
     ],
     'security' => [
+        'secondFactor' => [
+            'salt' => 'dhdh77dgbfy6Gdf37clb2l'
+        ],
         'jwt' => [
             'secret' => 'gd6cc27xv2GSc278xc'
         ]

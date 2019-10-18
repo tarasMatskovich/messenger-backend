@@ -12,6 +12,7 @@ use App\Domains\Entities\User\UserInterface;
 use App\Domains\Repository\User\UserRepositoryInterface;
 use App\Domains\Service\JWTService\JWTServiceInterface;
 use App\Domains\Service\UserPassword\UserPasswordServiceInterface;
+use App\Domains\Service\UserTOTPService\UserTOTPServiceInterface;
 
 /**
  * Class AuthenticationService
@@ -36,10 +37,16 @@ class AuthenticationService implements AuthenticationServiceInterface
     private $userPasswordService;
 
     /**
+     * @var UserTOTPServiceInterface
+     */
+    private $userTOTPService;
+
+    /**
      * AuthenticationService constructor.
      * @param UserRepositoryInterface $userRepository
      * @param JWTServiceInterface $JWTService
      * @param UserPasswordServiceInterface $userPasswordService
+     * @param UserTOTPServiceInterface $userTOTPService
      */
     public function __construct(
         UserRepositoryInterface $userRepository,
