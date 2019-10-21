@@ -10,6 +10,7 @@ namespace actions\user\signin;
 
 
 use actions\ActionInterface;
+use App\Domains\Entities\User\UserInterface;
 use App\Domains\Repository\User\UserRepositoryInterface;
 use App\Domains\Service\AuthenticationService\AuthenticationServiceInterface;
 use App\Request\Exception\NotAuthenticatedException;
@@ -58,11 +59,28 @@ class SignIn implements ActionInterface
         if (!$this->authenticationService->verifyUser($user, $password)) {
             throw new NotAuthenticatedException('Не вірний пароль. Спробуйте ще раз', 403);
         }
+        $code = $request->getAttribute('code', '');
+        if ($this->isSecondFactorRequired($user) && '' === $code) {
+            throw new NotAuthenticatedException('У вас ввімкнена двохфакторна аутентицікація - введіть код');
+        }
+        if (!$this->authenticationService->checkCode($user, $code)) {
+            throw new NotAuthenticatedException('Ви ввели неправильний код, будь ласка спробуйте ще раз');
+        }
         $token = $this->authenticationService->createToken($user);
         return [
             'user' => $user->toArray(),
             'token' => $token
         ];
 
+    }
+
+    /**
+     * @param UserInterface $user
+     * @return bool
+     */
+    private function isSecondFactorRequired(UserInterface $user): bool
+    {
+        $secondFactor = $user->getSecondFactor();
+        return (bool)$secondFactor;
     }
 }
