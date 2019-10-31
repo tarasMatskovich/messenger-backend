@@ -17,12 +17,15 @@ use actions\user\edit\EditUser;
 use actions\user\get\GetUser;
 use actions\user\getlist\GetUsersList;
 use actions\user\online\getlist\GetOnlineUserList;
+use actions\user\publickey\get\GetUserPublicKey;
+use actions\user\publickey\set\SetUserPublicKey;
 use actions\user\signin\SignIn;
 use actions\user\signup\SignUp;
 use App\container\ContainerInterface;
 use App\Domains\Entities\Message\Message;
 use App\Domains\Entities\Session\Session;
 use App\Domains\Entities\User\User;
+use App\Domains\Entities\UserKey\UserKey;
 use App\Domains\Responder\Message\MessageResponder;
 use App\Domains\Responder\Session\SessionResponder;
 use App\Domains\Responder\User\UserResponder;
@@ -142,6 +145,18 @@ return function (ContainerInterface $container) {
         return new GetUserSecondFactorInfo(
             $container->get('application.entityManager')->getRepository(User::class),
             $container->get(AuthenticationServiceInterface::class)
+        );
+    });
+    $container->set('action.user.publickey.set', function (ContainerInterface $container) {
+        return new SetUserPublicKey(
+            $container->get('application.entityManager')->getRepository(User::class),
+            $container->get('application.entityManager')->getRepository(UserKey::class)
+        );
+    });
+    $container->set('action.user.publickey.get', function (ContainerInterface $container) {
+        return new GetUserPublicKey(
+            $container->get('application.entityManager')->getRepository(User::class),
+            $container->get('application.entityManager')->getRepository(UserKey::class)
         );
     });
 

@@ -17,5 +17,7 @@ return [
     'action.user.edit' => 'action.user.edit',
     'action.user.auth.secondfactor.get' => 'action.user.auth.secondfactor.get',
     'action.user.auth.secondfactor.set' => 'action.user.auth.secondfactor.set',
-    'action.user.auth.secondfactor.getinfo' => 'action.user.auth.secondfactor.getinfo'
+    'action.user.auth.secondfactor.getinfo' => 'action.user.auth.secondfactor.getinfo',
+    'action.user.publickey.set' => 'action.user.publickey.set',
+    'action.user.publickey.get' => 'action.user.publickey.get'
 ];
