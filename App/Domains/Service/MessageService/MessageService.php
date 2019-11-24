@@ -48,14 +48,24 @@ class MessageService implements MessageServiceInterface
 
     /**
      * @param SessionInterface $session
-     * @param MessageInterface $message
+     * @param MessageInterface $receiverMessage
+     * @param MessageInterface $senderMessage
+     * @param $senderPublicKey
      * @return void
      */
-    public function publishMessage(SessionInterface $session, MessageInterface $message)
+    public function publishMessage(SessionInterface $session, MessageInterface $senderMessage, MessageInterface $receiverMessage, $senderPublicKey)
     {
+        $receiverData = $this->messageResponder->respondMessage($receiverMessage);
+        $senderData = $this->messageResponder->respondMessage($senderMessage);
+        $data['publicKey'] = $senderPublicKey;
         $this->clientSession->publish('user.session.' . $session->getId(), [
             EventsEnum::MESSAGE,
-            json_encode($this->messageResponder->respondMessage($message))
+            json_encode(
+                [
+                    'receiver' => $receiverData,
+                    'sender' => $senderData
+                ]
+            )
         ]);
     }
 }

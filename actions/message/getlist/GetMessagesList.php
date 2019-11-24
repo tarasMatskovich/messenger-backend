@@ -65,7 +65,7 @@ class GetMessagesList implements ActionInterface
         if (null !== $sessionId) {
             $session = $this->sessionRepository->find($sessionId);
             if (null !== $session) {
-                $messages = $this->messageRepository->findBy(['sessionId' => $session->getId(), 'type' => 0]);
+                $messages = $this->messageRepository->findBy(['sessionId' => $session->getId()]);
                 return [
                     'sessionId' => $session->getId(),
                     'messages' => $this->messageResponder->respondMessagesList($messages)

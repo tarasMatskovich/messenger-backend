@@ -63,9 +63,11 @@ class SignIn implements ActionInterface
         if ($this->isSecondFactorRequired($user) && '' === $code) {
             throw new NotAuthenticatedException('У вас ввімкнена двохфакторна аутентицікація - введіть код');
         }
-        if ($this->isSecondFactorRequired($user) && '' === $code && !$this->authenticationService->checkCode($user, $code)) {
+        $r1 = $this->authenticationService->checkCode($user, $code);
+        if ($this->isSecondFactorRequired($user) && '' !== $code && !$this->authenticationService->checkCode($user, $code)) {
             throw new NotAuthenticatedException('Ви ввели неправильний код, будь ласка спробуйте ще раз');
         }
+        $r2 = $this->authenticationService->checkCode($user, $code);
         $token = $this->authenticationService->createToken($user);
         return [
             'user' => $user->toArray(),

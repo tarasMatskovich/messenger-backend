@@ -25,10 +25,11 @@ class MessageFactory implements MessageFactoryInterface
      * @param SessionInterface $session
      * @param UserInterface $user
      * @param string $content
+     * @param UserInterface $createdBy
      * @return MessageInterface
      * @throws \Exception
      */
-    public function createForSend(SessionInterface $session, UserInterface $user, string $content): MessageInterface
+    public function createForSend(SessionInterface $session, UserInterface $user, string $content, UserInterface $createdBy): MessageInterface
     {
         $message = new Message();
         $message->setSessionId($session->getId());
@@ -36,6 +37,7 @@ class MessageFactory implements MessageFactoryInterface
         $message->setType(0);
         $message->setContent($content);
         $message->setCreatedAt((new \DateTime())->format('Y-m-d H:i:s'));
+        $message->setCreatedBy($createdBy->getId());
         return $message;
     }
 
@@ -43,10 +45,11 @@ class MessageFactory implements MessageFactoryInterface
      * @param SessionInterface $session
      * @param UserInterface $user
      * @param string $content
+     * @param UserInterface $createdBy
      * @return MessageInterface
      * @throws \Exception
      */
-    public function createForReceiver(SessionInterface $session, UserInterface $user, string $content): MessageInterface
+    public function createForReceiver(SessionInterface $session, UserInterface $user, string $content, UserInterface $createdBy): MessageInterface
     {
         $message = new Message();
         $message->setSessionId($session->getId());
@@ -54,6 +57,7 @@ class MessageFactory implements MessageFactoryInterface
         $message->setType(1);
         $message->setContent($content);
         $message->setCreatedAt((new \DateTime())->format('Y-m-d H:i:s'));
+        $message->setCreatedBy($createdBy->getId());
         return $message;
     }
 }

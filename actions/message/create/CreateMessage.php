@@ -82,8 +82,9 @@ class CreateMessage implements ActionInterface
         $userId = $request->getAttribute('userId');
         $receivedUserId = $request->getAttribute('receivedUserId');
         $sessionId = $request->getAttribute('sessionId');
-        // TODO REMOVE DEFAULT
-        $content = $request->getAttribute('content', 'Default content');
+        $senderPublicKey = $request->getAttribute('publicKey');
+        $content = $request->getAttribute('content', '');
+        $senderContent = $request->getAttribute('senderContent', '');
         if (null === $userId || null === $receivedUserId || null === $sessionId) {
             throw new \Exception('Неправильні аргументи для створення повідомлення', 500);
         }
@@ -93,11 +94,11 @@ class CreateMessage implements ActionInterface
         if (null === $user || null === $receiver || null === $session) {
             throw new \Exception('Неправильні аргументи для створення повідомлення', 500);
         }
-        $senderMessage = $this->messageFactory->createForSend($session, $user, $content);
-        $receiverMessage = $this->messageFactory->createForReceiver($session, $receiver, $content);
+        $senderMessage = $this->messageFactory->createForSend($session, $user, $senderContent, $user);
+        $receiverMessage = $this->messageFactory->createForReceiver($session, $receiver, $content, $user);
         $this->messageRepository->save($senderMessage);
         $this->messageRepository->save($receiverMessage);
-        $this->messageService->publishMessage($session, $senderMessage);
+        $this->messageService->publishMessage($session, $senderMessage, $receiverMessage, $senderPublicKey);
         return [];
     }
 }

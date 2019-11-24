@@ -20,9 +20,11 @@ interface MessageServiceInterface
 
     /**
      * @param SessionInterface $session
-     * @param MessageInterface $message
+     * @param MessageInterface $receiverMessage
+     * @param MessageInterface $senderMessage
+     * @param $senderPublicKey
      * @return void
      */
-    public function publishMessage(SessionInterface $session, MessageInterface $message);
+    public function publishMessage(SessionInterface $session, MessageInterface $senderMessage, MessageInterface $receiverMessage,  $senderPublicKey);
 
 }

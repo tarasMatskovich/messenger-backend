@@ -66,11 +66,13 @@ class MessageResponder implements MessageResponderInterface
     public function respondMessage(MessageInterface $message)
     {
         $userId = $message->getUserId();
-        if (null !== $userId) {
+        $createdById = $message->getCreatedBy();
+        if (null !== $userId && null !== $createdById) {
             $user = $this->userRepository->find($userId);
-            if (null !== $user) {
+            $createdBy = $this->userRepository->find($createdById);
+            if (null !== $user && null !== $createdBy) {
                 $messageData = $message->toArray();
-                $messageData['user'] = $this->userResponder->respondUser($user);
+                $messageData['user'] = $this->userResponder->respondUser($createdBy);
                 return $messageData;
             }
         }

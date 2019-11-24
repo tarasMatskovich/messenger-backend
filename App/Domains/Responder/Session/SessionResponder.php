@@ -57,15 +57,16 @@ class SessionResponder implements SessionResponderInterface
 
     /**
      * @param SessionInterface $session
+     * @param UserInterface $user
      * @return MessageInterface|null
      */
-    private function getLastMessage(SessionInterface $session)
+    private function getLastMessage(SessionInterface $session, UserInterface $user)
     {
         $messages = $this->messageRepository
             ->findBy(
                 [
                     'sessionId' => $session->getId(),
-                    'type' => 1
+                    'userId' => $user->getId(),
                 ],
                 [
                     'id' => 'DESC'
@@ -109,6 +110,13 @@ class SessionResponder implements SessionResponderInterface
         return null;
     }
 
+    private function getUserInfo(UserInterface $user)
+    {
+        $user = $user->toArray();
+        $user['image'] = $this->storageService->getBase64FromFile($user['image']);
+        return $user;
+    }
+
     /**
      * @param SessionInterface[] $sessions
      * @param UserInterface $user
@@ -120,14 +128,14 @@ class SessionResponder implements SessionResponderInterface
         foreach ($sessions as $session) {
             $data = [];
             $data['sessionId'] = $session->getId();
-            $lastMessage = $this->getLastMessage($session);
+            $lastMessage = $this->getLastMessage($session, $user);
             $lastMessageArray = null;
             $data['user'] = $this->getUserBySession($session, $user);
             if (null !== $lastMessage) {
                 $lastMessageArray = $lastMessage->toArray();
-                $lastMessageUser = $this->userRepository->find($lastMessage->getUserId());
+                $lastMessageUser = $this->userRepository->find($lastMessage->getCreatedBy());
                 if (null !== $lastMessageUser) {
-                    $lastMessageArray['user'] = $this->getUserBySession($session, $lastMessageUser);
+                    $lastMessageArray['user'] = $this->getUserInfo($lastMessageUser);
                 }
             }
             $data['lastMessage'] = $lastMessageArray;

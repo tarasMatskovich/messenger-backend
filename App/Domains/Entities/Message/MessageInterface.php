@@ -71,6 +71,17 @@ interface MessageInterface
     public function setCreatedAt($createdAt);
 
     /**
+     * @return int
+     */
+    public function getCreatedBy();
+
+    /**
+     * @param $createdBy
+     * @return void
+     */
+    public function setCreatedBy($createdBy);
+
+    /**
      * @return array
      */
     public function toArray();

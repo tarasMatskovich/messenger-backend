@@ -43,6 +43,11 @@ class Message implements MessageInterface
     private $createdAt;
 
     /**
+     * @\Doctrine\ORM\Mapping\Column(name="created_by")
+     */
+    private $createdBy;
+
+    /**
      * @return integer
      */
     public function getId()
@@ -135,6 +140,22 @@ class Message implements MessageInterface
     }
 
     /**
+     * @return int
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * @param $createdBy
+     */
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
      * @return array
      */
     public function toArray()
@@ -145,7 +166,8 @@ class Message implements MessageInterface
             'userId' => $this->userId,
             'type' => $this->type,
             'content' => $this->content,
-            'createdAt' => $this->createdAt
+            'createdAt' => $this->createdAt,
+            'createdBy' => $this->createdBy
         ];
     }
 }

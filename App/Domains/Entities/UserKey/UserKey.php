@@ -58,7 +58,7 @@ class UserKey implements UserKeyInterface
      */
     public function getUserId()
     {
-        return $this->getUserId();
+        return $this->userId;
     }
 
     /**

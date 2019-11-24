@@ -71,7 +71,7 @@ class GetSessionsList implements ActionInterface
             $user = $this->userRepository->find($userId);
             if (null !== $user) {
                 $sessions = $this->sessionRepository->findUserSessions($user);
-                $users = $this->getSingleUsers($sessions);
+                $users = $this->getSingleUsers($sessions, $userId);
                 $sessions = $this->sessionResponder->respondExtendedList($sessions, $user);
                 $users = $this->userResponder->respond($users);
                 $result = array_merge($sessions, $users);
@@ -87,11 +87,13 @@ class GetSessionsList implements ActionInterface
 
     /**
      * @param SessionInterface[] $sessions
+     * @param $userId
      * @return UserInterface[]
      */
-    private function getSingleUsers(array $sessions)
+    private function getSingleUsers(array $sessions, $userId)
     {
         $existingUsersIds = [];
+        $existingUsersIds[] = $userId;
         foreach ($sessions as $session) {
             $existingUsersIds[] = (int)$session->getUser1Id();
             $existingUsersIds[] = (int)$session->getUser2Id();

@@ -23,16 +23,18 @@ interface MessageFactoryInterface
      * @param SessionInterface $session
      * @param UserInterface $user
      * @param string $content
+     * @param UserInterface $createdBY
      * @return MessageInterface
      */
-    public function createForSend(SessionInterface $session, UserInterface $user, string $content): MessageInterface;
+    public function createForSend(SessionInterface $session, UserInterface $user, string $content, UserInterface $createdBY): MessageInterface;
 
     /**
      * @param SessionInterface $session
      * @param UserInterface $user
      * @param string $content
+     * @param UserInterface $createdBy
      * @return MessageInterface
      */
-    public function createForReceiver(SessionInterface $session, UserInterface $user, string $content): MessageInterface;
+    public function createForReceiver(SessionInterface $session, UserInterface $user, string $content, UserInterface $createdBy): MessageInterface;
 
 }
