@@ -17,4 +17,6 @@ class EventsEnum
 
     const MESSAGE = 'message';
 
+    const CREATED_SESSION = 'created_session';
+
 }

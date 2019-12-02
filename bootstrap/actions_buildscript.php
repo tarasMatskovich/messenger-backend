@@ -8,6 +8,7 @@ use actions\message\getlist\GetMessagesList;
 use actions\session\create\CreateSession;
 use actions\session\get\GetSession;
 use actions\session\getlist\GetSessionsList;
+use actions\session\realtime\CreateRealTimeSession;
 use actions\test\NotTest;
 use actions\test\Test;
 use actions\user\auth\secondfactor\get\GetUser2FA;
@@ -31,6 +32,7 @@ use App\Domains\Responder\Session\SessionResponder;
 use App\Domains\Responder\User\UserResponder;
 use App\Domains\Service\AuthenticationService\AuthenticationServiceInterface;
 use App\Domains\Service\MessageService\MessageServiceInterface;
+use App\Domains\Service\PublishService\PublishServiceInterface;
 use App\Domains\Service\StorageService\StorageServiceInterface;
 use App\Domains\Service\UserNetworkStatusService\UserNetworkStatusServiceInterface;
 use App\Domains\Service\UserTOTPService\UserTOTPServiceInterface;
@@ -157,6 +159,14 @@ return function (ContainerInterface $container) {
         return new GetUserPublicKey(
             $container->get('application.entityManager')->getRepository(User::class),
             $container->get('application.entityManager')->getRepository(UserKey::class)
+        );
+    });
+    $container->set('action.session.realtime.create', function (ContainerInterface $container) {
+        return new CreateRealTimeSession(
+            $container->get('application.entityManager')->getRepository(Session::class),
+            $container->get('application.entityManager')->getRepository(User::class),
+            $container->get('application.entityManager')->getRepository(UserKey::class),
+            $container->get(PublishServiceInterface::class)
         );
     });
 

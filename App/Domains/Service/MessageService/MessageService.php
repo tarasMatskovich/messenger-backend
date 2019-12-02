@@ -12,6 +12,8 @@ use App\Domains\Entities\Message\MessageInterface;
 use App\Domains\Entities\Session\SessionInterface;
 use App\Domains\Responder\Message\MessageResponderInterface;
 use App\Domains\Service\EventService\EventsEnum;
+use App\Domains\Service\PublishService\Message\PublishMessage;
+use App\Domains\Service\PublishService\PublishServiceInterface;
 use Thruway\ClientSession;
 
 /**
@@ -22,27 +24,27 @@ class MessageService implements MessageServiceInterface
 {
 
     /**
-     * @var ClientSession
-     */
-    private $clientSession;
-
-    /**
      * @var MessageResponderInterface
      */
     private $messageResponder;
 
     /**
+     * @var PublishServiceInterface
+     */
+    private $publishService;
+
+    /**
      * MessageService constructor.
-     * @param ClientSession $clientSession
      * @param MessageResponderInterface $messageResponder
+     * @param PublishServiceInterface $publishService
      */
     public function __construct(
-        ClientSession $clientSession,
-        MessageResponderInterface $messageResponder
+        MessageResponderInterface $messageResponder,
+        PublishServiceInterface $publishService
     )
     {
-        $this->clientSession = $clientSession;
         $this->messageResponder = $messageResponder;
+        $this->publishService = $publishService;
     }
 
 
@@ -57,15 +59,15 @@ class MessageService implements MessageServiceInterface
     {
         $receiverData = $this->messageResponder->respondMessage($receiverMessage);
         $senderData = $this->messageResponder->respondMessage($senderMessage);
-        $data['publicKey'] = $senderPublicKey;
-        $this->clientSession->publish('user.session.' . $session->getId(), [
+        $topicName = 'user.session.' . $session->getId();
+        $publishMessage = new PublishMessage(
+            $topicName,
             EventsEnum::MESSAGE,
-            json_encode(
-                [
-                    'receiver' => $receiverData,
-                    'sender' => $senderData
-                ]
-            )
-        ]);
+            [
+                'receiver' => $receiverData,
+                'sender' => $senderData
+            ]
+            );
+        $this->publishService->publish($publishMessage);
     }
 }

@@ -79,6 +79,10 @@ class SignUp implements ActionInterface
             throw new \Exception('Заповніть всі поля для реєстрації');
         }
         $user = $this->userFactory->makeUserFromSignUpRequest($request);
+        $existingUser = $this->userRepository->findOneBy(['email' => $user->getEmail()]);
+        if (null !== $existingUser) {
+            throw new \Exception('Користувач з таким email уже є в системі');
+        }
         $this->userRepository->save($user);
         return [
             'user' => $user->toArray()

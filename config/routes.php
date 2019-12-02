@@ -19,5 +19,6 @@ return [
     'action.user.auth.secondfactor.set' => 'action.user.auth.secondfactor.set',
     'action.user.auth.secondfactor.getinfo' => 'action.user.auth.secondfactor.getinfo',
     'action.user.publickey.set' => 'action.user.publickey.set',
-    'action.user.publickey.get' => 'action.user.publickey.get'
+    'action.user.publickey.get' => 'action.user.publickey.get',
+    'action.session.realtime.create' => 'action.session.realtime.create'
 ];

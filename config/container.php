@@ -19,6 +19,9 @@ use App\Domains\Service\JWTService\JWTService;
 use App\Domains\Service\JWTService\JWTServiceInterface;
 use App\Domains\Service\MessageService\MessageService;
 use App\Domains\Service\MessageService\MessageServiceInterface;
+use App\Domains\Service\PublishService\Message\PublishMessageInterface;
+use App\Domains\Service\PublishService\PublishService;
+use App\Domains\Service\PublishService\PublishServiceInterface;
 use App\Domains\Service\StorageService\StorageService;
 use App\Domains\Service\StorageService\StorageServiceInterface;
 use App\Domains\Service\UserNetworkStatusService\UserNetworkStatusService;
@@ -76,13 +79,13 @@ return [
         MessageFactoryInterface::class => MessageFactory::class,
         MessageServiceInterface::class => function (ContainerInterface $container) {
             return new MessageService(
-                $container->get('application.clientSession'),
                 new MessageResponder(
                     new UserResponder(
                         $container->get(StorageServiceInterface::class)
                     ),
                     $container->get('application.entityManager')->getRepository(User::class)
-                )
+                ),
+                $container->get(PublishServiceInterface::class)
             );
         },
         Base32Interface::class => Base32FixedNotationEncoder::class,
@@ -98,7 +101,10 @@ return [
               $container->get('application.config')->get('security:secondFactor:salt'),
               'Messenger'
             );
-        }
+        },
+        PublishServiceInterface::class => function (ContainerInterface $container) {
+            return new PublishService($container->get('application.clientSession'));
+        },
     ],
     'singletons' => [
         UserNetworkStatusServiceInterface::class => new UserNetworkStatusService()

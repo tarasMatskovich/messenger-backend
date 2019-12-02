@@ -12,6 +12,10 @@ use actions\ActionInterface;
 use App\Domains\Entities\Session\Session;
 use App\Domains\Repository\Session\SessionRepositoryInterface;
 use App\Domains\Repository\User\UserRepositoryInterface;
+use App\Domains\Repository\UserKey\UserKeyRepositoryInterface;
+use App\Domains\Service\EventService\EventsEnum;
+use App\Domains\Service\PublishService\Message\PublishMessage;
+use App\Domains\Service\PublishService\PublishServiceInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -32,25 +36,43 @@ class CreateRealTimeSession implements ActionInterface
     private $userRepository;
 
     /**
+     * @var UserKeyRepositoryInterface
+     */
+    private $userKeyRepository;
+
+    /**
+     * @var PublishServiceInterface
+     */
+    private $publishService;
+
+    /**
      * CreateRealTimeSession constructor.
      * @param SessionRepositoryInterface $sessionRepository
      * @param UserRepositoryInterface $userRepository
+     * @param UserKeyRepositoryInterface $userKeyRepository
+     * @param PublishServiceInterface $publishService
      */
     public function __construct(
         SessionRepositoryInterface $sessionRepository,
-        UserRepositoryInterface $userRepository
+        UserRepositoryInterface $userRepository,
+        UserKeyRepositoryInterface $userKeyRepository,
+        PublishServiceInterface $publishService
     )
     {
         $this->sessionRepository = $sessionRepository;
         $this->userRepository = $userRepository;
+        $this->userKeyRepository = $userKeyRepository;
+        $this->publishService = $publishService;
     }
 
     /**
      * @param ServerRequestInterface $request
      * @return array
+     * @throws \Exception
      */
     public function __invoke(ServerRequestInterface $request)
     {
+        $userId = $request->getAttribute('userId');
         $user1Id = $request->getAttribute('user1Id');
         $user2Id = $request->getAttribute('user2Id');
         if (null !== $user1Id && null !== $user2Id) {
@@ -60,8 +82,36 @@ class CreateRealTimeSession implements ActionInterface
                 $session = new Session();
                 $session->setUser1Id($user1->getId());
                 $session->setUser2Id($user2->getId());
-
+                $this->sessionRepository->save($session);
+                $receiverId = null;
+                if ((int)$userId === (int)$user1Id) {
+                    $receiverId = $user2Id;
+                } else {
+                    $receiverId = $user1Id;
+                }
+                $receiver = $this->userRepository->find($receiverId);
+                $sender = $this->userRepository->find($userId);
+                if (null !== $receiver && null !== $sender) {
+                    $receiverPublicKey = $this->userKeyRepository->findByUser($receiver);
+                    $senderPublicKey = $this->userKeyRepository->findByUser($sender);
+                    $topicName = 'user.session.created.' . $receiver->getId();
+                    $message = new PublishMessage(
+                        $topicName,
+                        EventsEnum::CREATED_SESSION,
+                        [
+                            'senderPublicKey' => $senderPublicKey->getKey(),
+                            'session' => $session->toArray(),
+                            'senderId' => $sender->getId()
+                        ]
+                    );
+                    $this->publishService->publish($message);
+                    return [
+                        'session' => $session->toArray(),
+                        'receiverPublicKey' => $receiverPublicKey->getKey()
+                    ];
+                }
             }
         }
+        throw new \Exception('Трапилась помилка при створенні нової сесії');
     }
 }
